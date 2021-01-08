@@ -3,6 +3,10 @@ body {
     flex-direction: column;
 }
 
+.headingText {
+    font-size: 8vh;
+}
+
 #header {
     text-align: center;
 }
@@ -70,4 +74,18 @@ body {
 
 .specDef {
     top: 83%;
+}
+
+.pokeball {
+    position: absolute;
+    width: 10vw;
+    height: 10vw;
+    top: 25%;
+    left: 30%;
+}
+
+#start {
+    width: 10vw;
+    position: relative;
+    left: 45vw;
 }
