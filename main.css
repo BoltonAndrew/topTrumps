@@ -1,0 +1,73 @@
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    text-align: center;
+}
+
+#gameBoard {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.card {
+    position: relative;
+    background-image: url(./assets/original-3304036-1.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 26vw;
+    height: 40vw;
+}
+
+#p2Card {
+    position: relative;
+}
+
+#vs {
+    position: relative;
+    width: 15vw;
+    height: 15vw;
+    top: 25vw;
+}
+
+.attText {
+    position: absolute;
+    width: 22vw;
+    height: 2vw;
+    font-size: 2vw;
+    left: 9%;
+    text-align: left;
+    background: transparent;
+    border: transparent 0 ;
+}
+
+.nameText {
+    position: absolute;
+    font-size: 2vw;
+    left: 10%;
+    top: 2%;
+}
+
+.hP {
+    top: 59%;
+}
+
+.pow {
+    top: 65%;
+}
+
+.def {
+    top: 71%
+}
+
+.specAtt {
+    top: 77%;
+}
+
+.specDef {
+    top: 83%;
+}
