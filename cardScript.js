@@ -1,24 +1,119 @@
 /*jshint esversion: 8*/
-const start = document.querySelector("#start");
-const pokeSprite1 = document.querySelector("#poke1");
-const pokeSprite2 = document.querySelector("#poke2");
-const pokeName1 = document.querySelector("#p1Name");
-const pokeName2 = document.querySelector("#p2Name");
-const p1H = document.querySelector("#p1H");
-const p1P = document.querySelector("#p1P");
-const p1D = document.querySelector("#p1D");
-const p1SA = document.querySelector("#p1SA");
-const p1SD = document.querySelector("#p1SD");
-const p2H = document.querySelector("#p2H");
-const p2P = document.querySelector("#p2P");
-const p2D = document.querySelector("#p2D");
-const p2SA = document.querySelector("#p2SA");
-const p2SD = document.querySelector("#p2SD");
-let winCondition;
+//DOM selectors
 
+const start = document.querySelector("#start");
+let activePlayer;
+let floatArr = [];
+const playerDomSelectorsArr = [{pokeSprite: document.querySelector("#poke1"),
+ pokeName: document.querySelector("#p1Name"),
+ pH: document.querySelector("#p1H"),
+ pP: document.querySelector("#p1P"),
+ pD: document.querySelector("#p1D"),
+ pSA: document.querySelector("#p1SA"),
+ pSD: document.querySelector("#p1SD")},
+ {pokeSprite: document.querySelector("#poke2"), 
+ pokeName: document.querySelector("#p2Name"),
+ pH: document.querySelector("#p2H"),
+ pP: document.querySelector("#p2P"),
+ pD: document.querySelector("#p2D"),
+ pSA: document.querySelector("#p2SA"),
+ pSD: document.querySelector("#p2SD")}];
+
+//functions 
+
+const drawCard = (playerNum) => {
+    playerDomSelectorsArr[playerNum].pokeSprite.src = players[playerNum].deck[0].sprite;
+    playerDomSelectorsArr[playerNum].pokeName.textContent += players[playerNum].deck[0].name;
+    playerDomSelectorsArr[playerNum].pH.textContent += players[playerNum].deck[0].health;
+    playerDomSelectorsArr[playerNum].pP.textContent += players[playerNum].deck[0].power;
+    playerDomSelectorsArr[playerNum].pD.textContent += players[playerNum].deck[0].defense;
+    playerDomSelectorsArr[playerNum].pSA.textContent += players[playerNum].deck[0].specAtt;
+    playerDomSelectorsArr[playerNum].pSD.textContent += players[playerNum].deck[0].specDef;      
+};
+const unDrawCard = () => {
+    playerDomSelectorsArr[0].pokeSprite.src = "./assets/58-589803_pokeball-png-transparent-image-pokeball-png-clipart.png";
+    playerDomSelectorsArr[0].pokeName.textContent = "Name: ";
+    playerDomSelectorsArr[0].pH.textContent = "HP: ";
+    playerDomSelectorsArr[0].pP.textContent = "Power: ";
+    playerDomSelectorsArr[0].pD.textContent = "Defense: ";
+    playerDomSelectorsArr[0].pSA.textContent = "Special Attack: ";
+    playerDomSelectorsArr[0].pSD.textContent = "Special Defense: ";
+    playerDomSelectorsArr[1].pokeSprite.src = "./assets/58-589803_pokeball-png-transparent-image-pokeball-png-clipart.png";
+    playerDomSelectorsArr[1].pokeName.textContent = "Name: ";
+    playerDomSelectorsArr[1].pH.textContent = "HP: ";
+    playerDomSelectorsArr[1].pP.textContent = "Power: ";
+    playerDomSelectorsArr[1].pD.textContent = "Defense: ";
+    playerDomSelectorsArr[1].pSA.textContent = "Special Attack: ";
+    playerDomSelectorsArr[1].pSD.textContent = "Special Defense: ";
+    drawCard(activePlayer);
+};
+const winCardMove = (winner, loser) => {
+    players[winner].deck.push(players[winner].deck[0], players[loser].deck[0]);
+    players[0].deck.shift();
+    players[1].deck.shift();
+    if (floatArr.length > 0) {
+        for (let i = 0; i < floatArr.length; i++) {
+            players[winner].deck.push(floatArr[i]);
+        }
+        floatArr = [];
+    }
+};
+const drawCardMove = () => {
+    floatArr.push(players[0].deck[0], players[1].deck[0]);
+    players[0].deck.shift();
+    players[1].deck.shift();
+};
+const compare = (attrib1, attrib2) => {
+    drawCard(players[activePlayer].opposingPlayer);
+    if (attrib1 > attrib2) {
+        console.log("player 1 wins");
+        setTimeout(unDrawCard, 3000);
+        winCardMove(0, 1);
+    } else if (attrib2 > attrib1) {
+        activePlayer = 1;
+        console.log("player 2 wins");
+        setTimeout(unDrawCard, 3000);
+        winCardMove(1, 0);
+    } else {
+        console.log("draw");
+        setTimeout(unDrawCard, 3000);
+        drawCardMove();
+    } 
+};
+const addEveListFunc = (playerNum) => {
+    playerDomSelectorsArr[playerNum].pH.addEventListener("click", () => {
+        if (playerNum === activePlayer) {
+            compare(players[0].deck[0].health, players[1].deck[0].health);
+
+        }
+    });
+    playerDomSelectorsArr[playerNum].pP.addEventListener("click", () => {
+        if (playerNum === activePlayer) {
+            compare(players[0].deck[0].power, players[1].deck[0].power);
+        }
+    });
+    playerDomSelectorsArr[playerNum].pD.addEventListener("click", () => {
+        if (playerNum === activePlayer) {
+            compare(players[0].deck[0].defense, players[1].deck[0].defense);
+        }
+    });
+    playerDomSelectorsArr[playerNum].pSA.addEventListener("click", () => {
+        if (playerNum === activePlayer) {
+            compare(players[0].deck[0].specAtt, players[1].deck[0].specAtt);
+        }
+    });
+    playerDomSelectorsArr[playerNum].pSD.addEventListener("click", () => {
+        if (playerNum === activePlayer) {
+            compare(players[0].deck[0].specDef, players[1].deck[0].specDef);
+        }
+    });
+};
+
+//constructors
 
 class PlayerConstructor {
-    constructor() {
+    constructor(playerNumber) {
+        this.opposingPlayer = playerNumber;
         this.deck = [];
     }
     async deckBuilder() {
@@ -37,41 +132,17 @@ class PlayerConstructor {
             }
     }
 }
+//main body
 
-const compare = (p1Att, p2Att) => {
-    if (p1Att > p2Att) {
-        return "p1";
-    } else if (p1Att < p2Att) {
-        return "p2";
-    } else {
-        return "draw";
-    }
-};
-
-const gameLoop = async () => {
-    let player1 = new PlayerConstructor();
-    await player1.deckBuilder();
-    let player2 = new PlayerConstructor();
-    await player2.deckBuilder();
-    let currentPlayer = 0;
-    while (player1.deck.length > 0 && player2.deck.length > 0) {
-        if (currentPlayer === 0) {
-            pokeSprite1.src = player1.deck[0].sprite;
-            pokeName1.textContent += player1.deck[0].name;
-            p1H.textContent += player1.deck[0].health;
-            p1P.textContent += player1.deck[0].power;
-            p1D.textContent += player1.deck[0].defense;
-            p1SA.textContent += player1.deck[0].specAtt;
-            p1SD.textContent += player1.deck[0].specDef;
-            p1H.addEventListener("click", compare(player1.deck[0].health, player2.deck[0].health));
-            p1P.addEventListener("click", compare(player1.deck[0].power, player2.deck[0].power));
-            p1D.addEventListener("click", compare(player1.deck[0].defense, player2.deck[0].defense));
-            p1SA.addEventListener("click", compare(player1.deck[0].specAtt, player2.deck[0].specAtt));
-            p1SD.addEventListener("click", compare(player1.deck[0].specDef, player2.deck[0].specDef));
-
-        }
-    }
-
+let players = [new PlayerConstructor(1), new PlayerConstructor(0)];
+players[0].deckBuilder();
+players[1].deckBuilder();
+const gameLoop = () => {
+    activePlayer = 0;
+    drawCard(activePlayer);
+    addEveListFunc(0);
+    addEveListFunc(1);
+    
 };
 
 start.addEventListener("click", gameLoop);
