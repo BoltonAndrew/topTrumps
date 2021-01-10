@@ -2,6 +2,7 @@
 //DOM selectors
 
 const start = document.querySelector("#start");
+const heading = document.querySelector("#header");
 let activePlayer;
 let floatArr = [];
 const playerDomSelectorsArr = [{pokeSprite: document.querySelector("#poke1"),
@@ -57,15 +58,28 @@ const winCardMove = (winner, loser) => {
         }
         floatArr = [];
     }
+    if (players[0].deck.length === 0 || players[1].deck.length === 0) {
+        winnerFunc(activePlayer);
+    }
 };
 const drawCardMove = () => {
     floatArr.push(players[0].deck[0], players[1].deck[0]);
     players[0].deck.shift();
     players[1].deck.shift();
+
+    if (players[0].deck.length === 0) {
+        winnerFunc(0);
+    } else if (players[1].deck.length === 0) {
+        winnerFunc(1);
+    }
+};
+const winnerFunc = (playerNum) => {
+    heading.textContent = `Player ${playerNum + 1} Wins!`;
 };
 const compare = (attrib1, attrib2) => {
     drawCard(players[activePlayer].opposingPlayer);
     if (attrib1 > attrib2) {
+        activePlayer = 0;
         console.log("player 1 wins");
         setTimeout(unDrawCard, 3000);
         winCardMove(0, 1);
